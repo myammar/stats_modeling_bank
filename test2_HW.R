@@ -11,6 +11,25 @@ data=data_pre
 #data['any_loan'] =ifelse((data['loan']=='yes'|data['housing']=='yes'),1,0)
 #data[c('day_of_week','default','loan','housing')]=NULL
 
+#年齢のビニング
+#library(infotheo)
+#data['age_disc'] = discretize(data['age'], disc="equalwidth")
+#data['age']=NULL
+
+
+#職業のグルーピング
+#retired, student, unemployedをunemploydedに集約する
+for(i in row(data['job'])){
+  if(data[i,'job']=='retired'|data[i,'job']=='student'|data[i,'job']=='unemployed'){
+    data[i,'job_category'] = data[21,'job']
+    }else{
+    data[i,'job_category'] = data[i,'job']
+  }
+  
+}
+data['job']=NULL
+
+
 
 #testデータ・trainデータの分割
 set.seed(1234)
@@ -31,7 +50,7 @@ test_data = remaining_data[-train2_idx,]
 #summary(data)
 
 #boxplot(age~y, data=data)
-#table(data$job, data$y)/apply(table(data$job, data$y),1,sum)
+table(data$job, data$y)/apply(table(data$job, data$y),1,sum)
 #table(data$job, data$y)
 #table(data$marital, data$y)/apply(table(data$marital, data$y),1,sum)
 #table(data$education, data$y)/apply(table(data$education, data$y),1,sum)
@@ -95,6 +114,7 @@ Revenue_test = Sales_test-cost_test
 Revenue_test
 
 #現在最高値:103,500 (特徴量エンジニアリングなし)
+#現在最高値:105,500 (職業のグループ化)
 
 ################################################################
 #ケース２：ランダムフォレストで予測した場合
